@@ -5,11 +5,10 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
-import idat.edu.pe.appmantenimientoroom.TarjetaRepository;
+import idat.edu.pe.appmantenimientoroom.repository.TarjetaRepository;
 import idat.edu.pe.appmantenimientoroom.db.entity.TarjetaEntity;
 
 public class TarjetaDialogViewModel extends AndroidViewModel {

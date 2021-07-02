@@ -1,10 +1,8 @@
-package idat.edu.pe.appmantenimientoroom;
+package idat.edu.pe.appmantenimientoroom.ui;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,27 +11,28 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 
+import idat.edu.pe.appmantenimientoroom.R;
+import idat.edu.pe.appmantenimientoroom.databinding.TarjetaDialogFragmentBinding;
 import idat.edu.pe.appmantenimientoroom.db.entity.TarjetaEntity;
 import idat.edu.pe.appmantenimientoroom.viewmodel.TarjetaDialogViewModel;
 
 public class TarjetaDialogFragment extends DialogFragment {
 
-    private View view;
-    private EditText ettitulo, etcontenido;
+    private TarjetaDialogFragmentBinding binding;
+    //private View view;
+    /*private EditText ettitulo, etcontenido;
     private RadioGroup rgcolor;
     private RadioButton rbtnamarillo, rbtnrojo, rbtnverde;
-    private Switch swimportante;
+    private Switch swimportante;*/
     private Integer idtarjeta = 0;
     private TarjetaDialogViewModel mViewModel;
 
@@ -66,14 +65,14 @@ public class TarjetaDialogFragment extends DialogFragment {
         builder.setMessage("Introduzca los datos de la nueva nota")
                 .setPositiveButton("Guardar", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        String titulo = ettitulo.getText().toString();
-                        String contenido = etcontenido.getText().toString();
+                        String titulo = binding.ettitulo.getText().toString();
+                        String contenido = binding.etcontenido.getText().toString();
                         String color = "amarillo";
-                        switch (rgcolor.getCheckedRadioButtonId()){
+                        switch (binding.radiogroupcolor.getCheckedRadioButtonId()){
                             case R.id.rbtnrojo : color = "rojo"; break;
                             case R.id.rbtnverde: color = "verde"; break;
                         }
-                        boolean esimportante = swimportante.isChecked();
+                        boolean esimportante = binding.swfavorito.isChecked();
                         //Comunicar el viewmodel el nuevo dato.
                         if(idtarjeta > 0){
                             mViewModel.updateTarjeta(new TarjetaEntity(idtarjeta, titulo, contenido, esimportante, color));
@@ -90,41 +89,44 @@ public class TarjetaDialogFragment extends DialogFragment {
                     }
                 });
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        view = inflater.inflate(R.layout.tarjeta_dialog_fragment, null);
-        etcontenido = view.findViewById(R.id.etcontenido);
+        //view = inflater.inflate(R.layout.tarjeta_dialog_fragment, null);
+        binding = TarjetaDialogFragmentBinding.inflate(inflater);
+        /*etcontenido = view.findViewById(R.id.etcontenido);
         ettitulo = view.findViewById(R.id.ettitulo);
         rgcolor = view.findViewById(R.id.radiogroupcolor);
         rbtnamarillo = view.findViewById(R.id.rbtnamarillo);
         rbtnrojo = view.findViewById(R.id.rbtnrojo);
         rbtnverde = view.findViewById(R.id.rbtnverde);
-        swimportante = view.findViewById(R.id.swfavorito);
+        swimportante = view.findViewById(R.id.swfavorito);*/
         if(idtarjeta > 0){
             mViewModel
                     .getTarjeta(idtarjeta).observe(getActivity(),
                     new Observer<TarjetaEntity>() {
                         @Override
                         public void onChanged(TarjetaEntity tarjetaEntity) {
-                            CargarInfoTarjeta(tarjetaEntity);
+                            if(tarjetaEntity != null) {
+                                CargarInfoTarjeta(tarjetaEntity);
+                            }
                         }
                     });
         }
-        builder.setView(view);
+        builder.setView(binding.getRoot());
         // Create the AlertDialog object and return it
         return builder.create();
     }
 
     private void CargarInfoTarjeta(TarjetaEntity tarjetaEntity){
-        etcontenido.setText(tarjetaEntity.getContenido());
-        ettitulo.setText(tarjetaEntity.getTitulo());
+        binding.etcontenido.setText(tarjetaEntity.getContenido());
+        binding.ettitulo.setText(tarjetaEntity.getTitulo());
         if(tarjetaEntity.isImportante()){
-            swimportante.setChecked(true);
+            binding.swfavorito.setChecked(true);
         }else{
-            swimportante.setChecked(false);
+            binding.swfavorito.setChecked(false);
         }
         switch (tarjetaEntity.getColor()){
-            case "amarillo": rbtnamarillo.setChecked(true); break;
-            case "rojo": rbtnrojo.setChecked(true); break;
-            case "verde": rbtnverde.setChecked(true); break;
+            case "amarillo": binding.rbtnamarillo.setChecked(true); break;
+            case "rojo": binding.rbtnrojo.setChecked(true); break;
+            case "verde": binding.rbtnverde.setChecked(true); break;
         }
     }
 

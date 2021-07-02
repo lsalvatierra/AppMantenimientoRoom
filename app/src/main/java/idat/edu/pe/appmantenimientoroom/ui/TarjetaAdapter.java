@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import idat.edu.pe.appmantenimientoroom.R;
-import idat.edu.pe.appmantenimientoroom.TarjetaDialogFragment;
+import idat.edu.pe.appmantenimientoroom.databinding.ItemTarjetaBinding;
 import idat.edu.pe.appmantenimientoroom.db.entity.TarjetaEntity;
 import idat.edu.pe.appmantenimientoroom.viewmodel.TarjetaDialogViewModel;
 
@@ -40,22 +40,22 @@ public class TarjetaAdapter extends
     @NonNull
     @Override
     public TarjetaAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_tarjeta, parent, false);
-        return new ViewHolder(view);
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        ItemTarjetaBinding recyclerBinding = ItemTarjetaBinding.inflate(layoutInflater, parent, false);
+        return new ViewHolder(recyclerBinding);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TarjetaAdapter.ViewHolder holder, final int position) {
         final TarjetaEntity objtarjetaentity = listatarjeta.get(position);
-        holder.tvtitulo.setText(objtarjetaentity.getTitulo());
-        holder.tvcontenido.setText(objtarjetaentity.getContenido());
+        holder.reclyclerBinding.tvtitulo.setText(objtarjetaentity.getTitulo());
+        holder.reclyclerBinding.tvcontenido.setText(objtarjetaentity.getContenido());
         if(objtarjetaentity.isImportante()){
-            holder.ivimportante.setImageResource(R.drawable.ic_star_black);
+            holder.reclyclerBinding.ivimportante.setImageResource(R.drawable.ic_star_black);
         }else {
-            holder.ivimportante.setImageResource(R.drawable.ic_star_border_black);
+            holder.reclyclerBinding.ivimportante.setImageResource(R.drawable.ic_star_border_black);
         }
-        holder.ivdelete.setOnClickListener(new View.OnClickListener() {
+        holder.reclyclerBinding.ivdelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mViewModel.deleteTarjeta(objtarjetaentity.getId());
@@ -63,13 +63,13 @@ public class TarjetaAdapter extends
         });
 
         switch (objtarjetaentity.getColor()){
-            case "amarillo" : holder.contenedor.setCardBackgroundColor(Color.YELLOW); break;
-            case "rojo" : holder.contenedor.setCardBackgroundColor(Color.RED); break;
-            case "verde" : holder.contenedor.setCardBackgroundColor(Color.GREEN); break;
+            case "amarillo" : holder.reclyclerBinding.contenedor.setCardBackgroundColor(Color.YELLOW); break;
+            case "rojo" : holder.reclyclerBinding.contenedor.setCardBackgroundColor(Color.RED); break;
+            case "verde" : holder.reclyclerBinding.contenedor.setCardBackgroundColor(Color.GREEN); break;
 
         }
 
-        holder.contenedor.setOnClickListener(new View.OnClickListener() {
+        holder.reclyclerBinding.contenedor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle param = new Bundle();
@@ -93,18 +93,10 @@ public class TarjetaAdapter extends
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView tvtitulo;
-        public final TextView tvcontenido;
-        public final ImageView ivimportante, ivdelete;
-        public final CardView contenedor;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvtitulo = itemView.findViewById(R.id.tvtitulo);
-            tvcontenido =  itemView.findViewById(R.id.tvcontenido);
-            ivimportante = itemView.findViewById(R.id.ivimportante);
-            ivdelete = itemView.findViewById(R.id.ivdelete);
-            contenedor = itemView.findViewById(R.id.contenedor);
+        ItemTarjetaBinding reclyclerBinding;
+        public ViewHolder(@NonNull ItemTarjetaBinding itemView) {
+            super(itemView.getRoot());
+            reclyclerBinding = itemView;
         }
     }
 }
